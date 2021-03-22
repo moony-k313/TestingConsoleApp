@@ -27,7 +27,7 @@ class BallPass {
         formGraph(matrix, numberedMatrix, graph);
         pathList = searchAlgorithm(graph, path, startPos, finishPos);
         if (pathList!= null) {
-            consoleResult(numberedMatrix, finishPos, pathList, path);
+            consoleResult(numberedMatrix,startPos, finishPos, pathList, path);
         }
 
     }
@@ -90,7 +90,6 @@ class BallPass {
         startPos = biggerArray[sRow][sColumn];
         finishPos = biggerArray[fRow][fColumn];
         numberedMatrix = biggerArray;
-
         for (int i = 0; i < biggerArray.length; i++) {
             for (int j = 0; j < biggerArray[i].length; j++) {
                 if (biggerArray[i][j] > 1) {
@@ -185,8 +184,13 @@ class BallPass {
 // Arraylist of int that already has needed fields (exactly value of fields)
 // and dictionary , that have key-value form of needed path , value of key is his own pair that way to start point from the finish
 
-    private static void consoleResult(int[][] numeredArray, int finish, ArrayList<Integer> pathList , TreeMap<Integer, Integer> pathDict) {
+    private static void consoleResult(int[][] numeredArray,int start, int finish, ArrayList<Integer> pathList , TreeMap<Integer, Integer> pathDict) {
         String[][] strArrayForResult = new String[rows][columns];  //
+        String[] strArrayForPassPrint = new String[pathList.size()];
+        for(int i = 0; i<strArrayForPassPrint.length; i++ ){
+            strArrayForPassPrint[i] = String.valueOf(pathList.get(i));
+        }
+
         for (int i = 0; i < numeredArray.length; i++) {
             for (int j = 0; j < numeredArray[i].length; j++) {
                 if (numeredArray[i][j] > 1) {
@@ -194,22 +198,47 @@ class BallPass {
                         // upper
                         if (numeredArray[i - 1][j] > 1 && pathList.contains(numeredArray[i - 1][j]) && pathDict.get(numeredArray[i-1][j]) == numeredArray[i][j]) {
                             strArrayForResult[i - 1][j - 1] = "U";
+
+                            for (int k = 0; k<strArrayForPassPrint.length;k++){
+                                if (strArrayForPassPrint[k].equals(String.valueOf(numeredArray[i][j]))){
+                                    strArrayForPassPrint[k] = "U";
+                                }
+                            }
                         }
                         // more left
                         else if (numeredArray[i][j - 1] > 1 && pathList.contains(numeredArray[i][j - 1]) && pathDict.get(numeredArray[i][j-1]) == numeredArray[i][j] ) {
                             strArrayForResult[i - 1][j - 1] = "L";
+
+                            for (int k = 0; k<strArrayForPassPrint.length;k++){
+                                if (strArrayForPassPrint[k].equals(String.valueOf(numeredArray[i][j]))){
+                                    strArrayForPassPrint[k] = "L";
+                                }
+                            }
                         }
                         // more down
                         else if (numeredArray[i + 1][j] > 1 && pathList.contains(numeredArray[i + 1][j]) && pathDict.get(numeredArray[i+1][j]) == numeredArray[i][j] ) {
                             strArrayForResult[i - 1][j - 1] = "D";
+
+                            for (int k = 0; k<strArrayForPassPrint.length;k++){
+                                if (strArrayForPassPrint[k].equals(String.valueOf(numeredArray[i][j]))){
+                                    strArrayForPassPrint[k] = "D";
+                                }
+                            }
                         }
                         // more right
                         else if (numeredArray[i][j + 1] > 1 && pathList.contains(numeredArray[i][j + 1]) && pathDict.get(numeredArray[i][j+1]) == numeredArray[i][j] ) {
                             strArrayForResult[i - 1][j - 1] = "R";
+
+                            for (int k = 0; k<strArrayForPassPrint.length;k++){
+                                if (strArrayForPassPrint[k].equals(String.valueOf(numeredArray[i][j]))){
+                                    strArrayForPassPrint[k] = "R";
+                                }
+                            }
                         }
                         // final point -> "F"
                         if (numeredArray[i][j] == finish) {
                             strArrayForResult[i - 1][j - 1] = "F";
+                            strArrayForPassPrint[0] = "F";
                         }
                     }
                     else {
@@ -224,6 +253,12 @@ class BallPass {
         }
 
         printMatrix(strArrayForResult);
+        System.out.print("Path : ");
+        for (int i = strArrayForPassPrint.length - 1; i >= 0; i--)
+        {
+            System.out.print(" -> " + strArrayForPassPrint[i]);
+        }
+        System.out.println();
         System.out.print("Steps for path = " + pathList.size());
     }
 }
